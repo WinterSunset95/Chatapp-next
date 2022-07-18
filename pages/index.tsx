@@ -1,42 +1,14 @@
+import { User } from 'firebase/auth';
+import { setuid } from 'process';
 import { useState, useEffect } from 'react'
-import { initializeApp } from 'firebase/app'
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
 import styles from '../styles/Home.module.css'
+import { RegistrationForm } from './components/authentication/RegistrationForm';
 
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_PUBLIC_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
-};
-
-const email = process.env.NEXT_PUBLIC_EMAIL
-const password = process.env.NEXT_PUBLIC_PASSWORD
-console.log(email, password)
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app)
-createUserWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
-    // Signed in 
-    const user = userCredential.user;
-    // ...
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    // ..
-  });
-signInWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
-    // Signed in 
-    const user = userCredential.user;
-    // ...
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-  });
 export default function Home() {
+
+  // TODO: Migrate this part away to some different location.
+
+  const [user, setUser] = useState<User>();
   
   return (
     <div>
@@ -53,6 +25,19 @@ export default function Home() {
           <div>
             <h3>Input a username</h3>
           </div>
+        </div>
+      </section>
+      <section>
+        <RegistrationForm onSubmit={() => setUser(undefined)} onSuccess={(user) => setUser(user)} onError={(error) => console.error(`I fucked up: ${error}}`)} />
+        <div>
+          {user &&
+            <div>
+              <h2>User {user.uid} created.</h2>
+              <p>
+                Is email verified: {user.emailVerified ? "Yes": "No"}
+              </p>
+            </div> 
+          }
         </div>
       </section>
     </div>
