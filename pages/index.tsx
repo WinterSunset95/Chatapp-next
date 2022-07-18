@@ -1,26 +1,60 @@
 import { useState, useEffect } from 'react'
 import { initializeApp } from 'firebase/app'
-import { getAuth } from 'firebase/auth'
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
 import styles from '../styles/Home.module.css'
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAkQ3m218l2V04nNST11rZ537qfdTxUn_g",
-  authDomain: "chatapp-next-43499.firebaseapp.com",
-  projectId: "chatapp-next-43499",
-  storageBucket: "chatapp-next-43499.appspot.com",
-  messagingSenderId: "1068927886270",
-  appId: "1:1068927886270:web:9cae76dd0ec526310b0fef",
-  measurementId: "G-67LH41QL3V"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_PUBLIC_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
 };
+
+const email = process.env.NEXT_PUBLIC_EMAIL
+const password = process.env.NEXT_PUBLIC_PASSWORD
+console.log(email, password)
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app)
-
+createUserWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+    // ...
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    // ..
+  });
+signInWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+    // ...
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+  });
 export default function Home() {
   
   return (
     <div>
-      <h1>This is a header</h1>
-      <h2>This is a h2 tag</h2>
+      <nav className={styles.header}>
+        <h1>Programmers' guild</h1>
+        <div>
+          <a href='https://github.com/WinterSunset95'>
+            <img src='https://avatars.githubusercontent.com/u/90015510?v=4' className={styles.homeGithubImg}/>
+          </a>
+        </div>
+      </nav>
+      <section className={styles.homeLogin}>
+        <div className={styles.homeLoginBox}>
+          <div>
+            <h3>Input a username</h3>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }
